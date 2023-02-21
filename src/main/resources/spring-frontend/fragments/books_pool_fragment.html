@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<div class="Cards Cards_refresh" th:fragment="popularBooks">
+    <div class="Card" th:each="book : ${popularBooks}">
+        <div class="Card-picture">
+            <a href="#a" th:href="${book.id}">
+                <img src="/assets/img/content/main/card.jpg" alt="card.jpg"/>
+            </a>
+            <div class="Card-sale"
+                 th:text="${book.discount}+'% скидка'"
+                 th:if="${book.discount != 0}"></div>
+            <div class="Card-ribbon">
+                <span class="Card-ribbonText"
+                      th:text="${book.isBestseller} ? 'Бестселлер' : ''"></span>
+            </div>
+        </div>
+        <div class="Card-content">
+            <strong class="Card-title">
+                <a href="#" th:text="${#strings.toUpperCase(book.title)}"></a>
+            </strong>
+            <div class="Card-description"
+                 th:text="${book.author.name}+' '+${book.author.surname}"></div>
+            <div class="Card-cost">
+                <span class="Card-priceOld" th:text="${book.priceOld}"></span>
+                <span class="Card-price" th:text="${book.price}"></span>
+            </div>
+        </div>
+    </div>
+    <div class="Cards-footer Cards-footer_center"><a class="btn btn_primary" href="#" data-refreshshow="popular" data-refreshoffset="20" data-refreshlimit="20"
+                                                     th:text="#{middlebar.showmore}">Показать еще</a>
+    </div>
+</div>
+</html>
