@@ -1,0 +1,19 @@
+server:
+  port: 8090
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+  web:
+    resources:
+      static-locations: classpath:/spring-frontend/
+  thymeleaf:
+    prefix: classpath:/spring-frontend/
+  sql:
+    init:
+      data-locations: classpath:data.sql, classpath:authors.sql
+      schema-locations: classpath:schema.sql
+  messages:
+    basename: lang.messages, lang.mainpage
