@@ -1,38 +1,29 @@
 package com.example.MyBookShopApp.data;
+import com.example.MyBookShopApp.model.Book.BookEntity;
+import com.example.MyBookShopApp.model.Book.BookRepository;
+import com.example.MyBookShopApp.model.Book2Author.Book2Author;
+import com.example.MyBookShopApp.model.Book2Author.Book2AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
-    private final JdbcTemplate jdbcTemplate;
+    private final BookRepository bookRepository;
+    private final Book2AuthorRepository book2AuthorRepository;
 
     @Autowired
-    public BookService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public BookService(BookRepository bookRepository,
+                       Book2AuthorRepository book2AuthorRepository) {
+        this.bookRepository = bookRepository;
+        this.book2AuthorRepository = book2AuthorRepository;
+    }
+    public List<Book2Author> getBooksData() {
+        return book2AuthorRepository.findAll();
+    }
+    public List<Book2Author> getPopularBooks() {
+        return book2AuthorRepository.findAllBy();
     }
 
-    public List<Book> getBooksData() {
-        List<Book> books = jdbcTemplate.query("SELECT b.`id`, a.`first_name`, a.`last_name`, b.`title`, b.`priceold`, b.`price`, b.`discount`, b.`is_bestseller`\n" +
-                "FROM BOOKS b JOIN `authors` a ON a.`id_author` = b.`id_author` ", (ResultSet rs, int rowNum) -> {
-            Author author = new Author();
-            author.setName(rs.getString("first_name"));
-            author.setSurname(rs.getString("last_name"));
-
-            Book book = new Book();
-            book.setId(rs.getInt("id"));
-            book.setTitle(rs.getString("title"));
-            book.setPriceOld(rs.getString("priceOld"));
-            book.setPrice(rs.getString("price"));
-            book.setDiscount(rs.getInt("discount"));
-            book.setBestseller(rs.getBoolean("is_bestseller"));
-            book.setAuthor(author);
-            return book;
-        });
-        return new ArrayList<>(books);
-    }
 }

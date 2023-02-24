@@ -1,6 +1,6 @@
 package com.example.MyBookShopApp.controllers;
-import com.example.MyBookShopApp.data.Author;
 import com.example.MyBookShopApp.data.AuthorService;
+import com.example.MyBookShopApp.model.Author.AuthorEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,7 @@ public class AuthorsController {
         this.authorService = authorService;
     }
     @ModelAttribute("authorsMap")
-    public Map<String, List<Author>> authorsMap() {
+    public Map<String, List<AuthorEntity>> authorsMap() {
         return authorService.getAuthorsMap();
     }
 
