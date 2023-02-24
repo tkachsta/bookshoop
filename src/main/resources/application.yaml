@@ -26,4 +26,4 @@ spring:
     basename: lang.messages, lang.mainpage
   liquibase:
     enabled: true
-    change-log: classpath:/db.changelog/db.changelog-master.xml
+    change-log: classpath:/db.changelogs/db.changelog-master.xml
