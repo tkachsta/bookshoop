@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<div clas="Tags" th:fragment="genres_menu">
+        <div th:class="${menuItem.parentId == null or !menuItem.children.isEmpty} ? 'Tag-Title' : 'Tag'"
+             th:each="menuItem : ${menuItemList}">
+            <div class="Tag" th:if = "${menuItem.parentId == null or !menuItem.children.isEmpty}">
+                <a th:href="${'/books/genres/' + menuItem.slug}" th:text="${menuItem.name} +' '+ '(' + ${menuItem.books.size()} + ')'">
+                </a>
+            </div>
+            <a th:href="${'/books/genres/' + menuItem.slug}" th:text="${menuItem.name} +' '+ '(' + ${menuItem.books.size()} + ')'"
+               th:if = "${menuItem.parentId != null and menuItem.children.isEmpty}">
+            </a>
+            <div class="Tags"  th:include="~{fragments/genres_menu :: genres_menu}"
+                 th:with="menuItemList=${menuItem.children}"
+                 th:if="${!menuItem.children.isEmpty}">
+            </div>
+        </div>
+</div>
+</html>

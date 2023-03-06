@@ -1,0 +1,92 @@
+[
+  {
+    "authorId": 18,
+    "firstName": "Kali",
+    "lastName": "Deadman",
+    "description": "dui nec nisi volutpat eleifend donec ut dolor morbi vel lectus in quam fringilla rhoncus mauris enim",
+    "photo": "proin at turpis a pede posuere",
+    "slug": "aliquam lacus morbi quis tortor id nulla ultrices",
+    "books": [
+      {
+        "image": "non sodales sed tincidunt eu felis fusce",
+        "price": 1123,
+        "description": "eros vestibulum ac est lacinia nisi venenatis tristique fusce congue diam id ornare imperdiet sapien urna pretium nisl ut",
+        "discount": 0,
+        "title": "Jet Lag (Décalage horaire)",
+        "pubDate": "2022-07-03T00:00:00",
+        "slug": "in purus eu magna vulputate luctus cum",
+        "bookId": 146
+      },
+      {
+        "image": "donec quis orci eget orci vehicula condimentum curabitur",
+        "price": 566,
+        "description": "massa id nisl venenatis lacinia aenean sit amet justo morbi ut odio cras mi pede",
+        "discount": 0,
+        "title": "What Have They Done to Your Daughters?",
+        "pubDate": "2022-05-14T00:00:00",
+        "slug": "rutrum 0a tellus in sagittis dui vel nisl duis",
+        "bookId": 212
+      },
+      {
+        "image": "blandit mi in porttitor pede justo eu massa donec",
+        "price": 1497,
+        "description": "mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus metus arcu adipiscing",
+        "discount": 0,
+        "title": "Gods Must Be Crazy III, The (a.k.a. Crazy Safari) (Fei zhou he shang)",
+        "pubDate": "2022-12-29T00:00:00",
+        "slug": "elit sodales scelerisque mauris sit amet",
+        "bookId": 927
+      },
+      {
+        "image": "viverra dapibus 0a suscipit ligula in lacus",
+        "price": 3164,
+        "description": "dui proin leo odio porttitor id consequat in consequat ut 0a sed accumsan felis ut at dolor quis odio",
+        "discount": 0,
+        "title": "Swastika",
+        "pubDate": "2022-06-16T00:00:00",
+        "slug": "convallis morbi odio odio elementum",
+        "bookId": 403
+      },
+      {
+        "image": "commodo placerat praesent blandit nam 0a integer pede justo",
+        "price": 713,
+        "description": "hac habitasse platea dictumst maecenas ut massa quis augue luctus tincidunt 0a mollis molestie lorem quisque",
+        "discount": 1,
+        "title": "New Year's Eve",
+        "pubDate": "2022-03-23T00:00:00",
+        "slug": "0a ac enim in tempor turpis",
+        "bookId": 451
+      },
+      {
+        "image": "varius integer ac leo pellentesque ultrices mattis odio donec vitae",
+        "price": 2638,
+        "description": "sit amet sapien dignissim vestibulum vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia",
+        "discount": 0,
+        "title": "The Phantom of the Opera",
+        "pubDate": "2022-06-13T00:00:00",
+        "slug": "eu orci mauris lacinia sapien",
+        "bookId": 768
+      },
+      {
+        "image": "nisi vulputate nonummy maecenas tincidunt",
+        "price": 1454,
+        "description": "nonummy maecenas tincidunt lacus at velit vivamus vel 0a eget eros elementum pellentesque quisque porta volutpat erat",
+        "discount": 0,
+        "title": "Secrets of the Heart (Secretos del Corazón)",
+        "pubDate": "2022-08-27T00:00:00",
+        "slug": "eu nibh quisque id justo sit amet",
+        "bookId": 35
+      },
+      {
+        "image": "0a dapibus dolor vel est donec",
+        "price": 2921,
+        "description": "morbi odio odio elementum eu interdum eu tincidunt in leo maecenas pulvinar lobortis est phasellus",
+        "discount": 0,
+        "title": "Sex and Lucia (Lucía y el sexo)",
+        "pubDate": "2022-07-03T00:00:00",
+        "slug": "habitasse platea dictumst etiam faucibus",
+        "bookId": 953
+      }
+    ]
+  }
+]

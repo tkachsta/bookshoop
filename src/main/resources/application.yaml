@@ -20,10 +20,17 @@ spring:
     prefix: classpath:/spring-frontend/
   sql:
     init:
-      data-locations: classpath:authors.sql, classpath:books.sql, classpath:book2author.sql
+      data-locations: classpath:users.sql, classpath:tags.sql, classpath:genres.sql, classpath:books.sql, classpath:authors.sql, classpath:balance_transaction.sql, classpath:book2user_type.sql, classpath:book2user.sql, classpath:book2tag.sql, classpath:book2genre.sql, classpath:book2author.sql
       mode: never
   messages:
     basename: lang.messages, lang.mainpage
   liquibase:
     enabled: true
     change-log: classpath:/db.changelogs/db.changelog-master.xml
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+

@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<div class="Cards Cards_refresh" th:fragment="popularBooks">
+<div class="Cards Cards_refresh" th:fragment="popularBooks (collection, refreshshow, refreshid)">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <div class="Card" th:each="book2author : ${popularBooks}">
+    <div class="Card" th:each="book : ${collection}">
         <div class="Card-picture">
-            <a href="#a" th:href="${book2author.book.bookId}">
-                <img src="/assets/img/content/main/card.jpg" alt="card.jpg"/>
+            <a href="#a" th:href="${book.bookId}">
+                <img th:src="${book.image}" alt="card.jpg"/>
             </a>
             <div class="Card-sale"
-                 th:text="${book2author.book.discount}+'% скидка'"
-                 th:if="${book2author.book.discount != 0}"></div>
+                 th:text="${book.discount}+'% скидка'"
+                 th:if="${book.discount != 0}"></div>
             <div class="Card-ribbon">
                 <span class="Card-ribbonText"
-                      th:text="${book2author.book.isBestseller} ? 'Бестселлер' : ''"></span>
+                      th:text="${book.bestseller} ? 'Бестселлер' : ''"></span>
             </div>
         </div>
         <div class="Card-content">
             <strong class="Card-title">
-                <a href="#" th:text="${#strings.toUpperCase(book2author.book.title)}"></a>
+                <a href="#" th:text="${#strings.toUpperCase(book.title)}"></a>
             </strong>
-            <div class="Card-description"
-                 th:text="${book2author.author?.firstName}+' '+${book2author.author?.lastName}"></div>
+            <div class="Card-description" th:each="author : ${book.getAuthors()}"
+                 th:text="${author.author?.firstName +' '+ author.author?.lastName}"></div>
             <div class="Card-cost">
-                <span class="Card-priceOld" th:text="${book2author.book.priceOld}"></span>
-                <span class="Card-price" th:text="${book2author.book.price}"></span>
+                <span class="Card-priceOld" th:text="'₽' + ${book.priceOld}"></span>
+                <span class="Card-price" th:text="'₽' + ${book.price}"></span>
             </div>
         </div>
     </div>
-    <div class="Cards-footer Cards-footer_center"><a class="btn btn_primary" href="#" data-refreshshow="popular"
-                                                     data-refreshoffset="20" data-refreshlimit="20"
+    <div class="Cards-footer Cards-footer_center"><a class="btn btn_primary" href="#"
+                                                     data-th-attr=
+                                                             "data-refreshshow=${refreshshow},
+                                                              data-refreshid=${refreshid}"
+                                                     data-refreshoffset="0" data-refreshlimit="20"
+                                                     data-refreshfrom="01.08.2022"
+                                                     data-refreshto="01.10.2022"
                                                      th:text="#{middlebar.showmore}">Показать еще</a>
     </div>
 </div>

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+    <div class="Tags" id="tags" th:fragment="tags" >
+        <div th:each="tagDto : ${booksByTags}" th:attr="class=${tagDto.tagClass}" >
+            <a th:attr="href = '/books/tag/' + ${tagDto.tag.tagId}" th:text="${tagDto.tag.tagName}"></a>
+        </div>
+
+    </div>
+</html>

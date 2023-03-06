@@ -1,26 +1,66 @@
 package com.example.MyBookShopApp.controllers;
 import com.example.MyBookShopApp.data.BookService;
-import com.example.MyBookShopApp.model.Book.BookEntity;
-import com.example.MyBookShopApp.model.Book2Author.Book2Author;
+import com.example.MyBookShopApp.data.TagService;
+import com.example.MyBookShopApp.model.dtos.SearchWordDto;
+import com.example.MyBookShopApp.model.dtos.tags.TagDto;
+import com.example.MyBookShopApp.model.entities.Book.BookEntity;
+import com.example.MyBookShopApp.model.entities.Book2Author.Book2Author;
+import com.example.MyBookShopApp.model.entities.Tag.TagEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
 public class MainPageController {
     private final BookService bookService;
+    private final TagService tagService;
+
     @Autowired
-    public MainPageController(BookService bookService) {
+    public MainPageController(BookService bookService, TagService tagService) {
         this.bookService = bookService;
+        this.tagService = tagService;
+    }
+    @ModelAttribute("searchWordDto")
+    public SearchWordDto searchWordDto() {
+        return new SearchWordDto();
+    }
+    @ModelAttribute("searchResults")
+    public List<BookEntity> searchResults(){
+        return new ArrayList<>();
     }
     @ModelAttribute("recommendedBooks")
-    public List<Book2Author> recommendedBooks(){
-        return bookService.getBooksData();
+    public List<BookEntity> recommendedBooks(){
+        return bookService.getRecommendedBooksPage(0, 6).getContent();
     }
+    @ModelAttribute("recentBooks")
+    public List<BookEntity> recentBooks(){
+        return bookService.getRecentBooksForSlider(0,6).getContent();
+    }
+    @ModelAttribute("popularBooks")
+    public List<BookEntity> popularBooks(){
+        return bookService.getPopularBooksPage(0,6).getContent();
+    }
+    @ModelAttribute("booksByTags")
+    public List<TagDto> getTags() {
+        return tagService.getExistingTags();
+    }
+
+
+
+
+
+    @Operation(summary = "Get main page")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found main page")
+    })
     @GetMapping()
     public String mainPage() {
         return "index";
@@ -61,4 +101,8 @@ public class MainPageController {
     public String myProfile() {
         return "profile";
     }
+
+
+
+
 }

@@ -479,7 +479,7 @@ definitions:
             discount:
                 type: integer
                 format: int
-            isBestseller:
+            bestseller:
                 type: boolean
             rating:
                 type: integer
@@ -489,7 +489,7 @@ definitions:
             price:
                 type: integer
                 format: int
-            discountPrice:
+            priceOld:
                 type: integer
                 format: int
         example:

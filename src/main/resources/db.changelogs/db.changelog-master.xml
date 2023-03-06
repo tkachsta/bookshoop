@@ -8,4 +8,10 @@
            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <include file="/db.changelogs/liquibase-outputChangeLog-init.xml"/>
+    <include file="/db.changelogs/liquibase-changeset-0.1-26.02.23.xml"/>
+    <include file="/db.changelogs/liquibase-changeset-0.2-1.03.23.xml"/>
+    <include file="/db.changelogs/liquibase-changeset-0.3-1.03.23.xml"/>
+    <include file="/db.changelogs/liquibase-changeset-0.4-3.06.23.xml"/>
+    <include file="/db.changelogs/liquibase-changeset-0.5-3.06.23.xml"/>
+    <include file="/db.changelogs/liquibase-changeset-0.6-3.06.23.xml"/>
 </databaseChangeLog>
