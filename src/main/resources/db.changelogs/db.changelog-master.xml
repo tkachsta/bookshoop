@@ -14,4 +14,5 @@
     <include file="/db.changelogs/liquibase-changeset-0.4-3.06.23.xml"/>
     <include file="/db.changelogs/liquibase-changeset-0.5-3.06.23.xml"/>
     <include file="/db.changelogs/liquibase-changeset-0.6-3.06.23.xml"/>
+    <include file="/db.changelogs/liquibase-changeset-0.7-7.06.23.xml"/>
 </databaseChangeLog>

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -18,10 +19,12 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
     List<BookEntity> findBookEntitiesByPriceOldBetween(Integer min, Integer max);
     List<BookEntity> findBookEntitiesByPriceOldIs(Integer price);
     List<BookEntity> findBookEntitiesByIsBestsellerTrue();
+    Optional<BookEntity> findBySlugIs(String slug);
     @Query(value = "SELECT * FROM books WHERE discount = (SELECT MAX(discount) FROM books)",
             nativeQuery = true)
     List<BookEntity> getBookEntitiesByMaxDiscount();
     Page<BookEntity> findBookEntitiesByTitleContaining(String bookTitle, Pageable nextPage);
+    List<BookEntity> findAllBySlugIsIn(List<String> slugs);
     @Query("SELECT b FROM BookEntity b WHERE b.pub_date > :param ORDER BY b.pub_date DESC")
     Page<BookEntity> findRecentBooks(@Param("param") LocalDateTime dateTime, Pageable pageable);
     @Query("SELECT b FROM BookEntity b WHERE b.pub_date BETWEEN :from AND :to ORDER BY b.pub_date DESC")

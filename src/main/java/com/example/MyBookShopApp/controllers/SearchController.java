@@ -1,5 +1,6 @@
 package com.example.MyBookShopApp.controllers;
 import com.example.MyBookShopApp.data.BookService;
+import com.example.MyBookShopApp.exceptions.EmptySearchException;
 import com.example.MyBookShopApp.model.dtos.RecommendedBooksDto;
 import com.example.MyBookShopApp.model.dtos.SearchWordDto;
 import com.example.MyBookShopApp.model.entities.Book.BookEntity;
@@ -32,20 +33,26 @@ public class SearchController {
         return bookService.getRecommendedBooksPage(0, 6).getContent();
     }
     @GetMapping(value = {"","/{searchWord}"})
-    public String getSearchResults(
-            @PathVariable(value = "searchWord", required = false) SearchWordDto searchWordDto,
-            Model model) {
-        model.addAttribute("searchWordDto", searchWordDto);
-        model.addAttribute("searchResults",
-                bookService.getPageOfRecommendedBooks(
-                        searchWordDto.getExample(), 0, 20).getContent());
-        return "/search/index";
+    public String getSearchResults( @PathVariable(value = "searchWord", required = false) SearchWordDto searchWordDto,
+                                    Model model) throws EmptySearchException {
+        if (searchWordDto != null) {
+            model.addAttribute("searchWordDto", searchWordDto);
+            model.addAttribute("searchResults",
+                    bookService.getPageOfRecommendedBooks(
+                            searchWordDto.getExample(), 0, 20).getContent());
+            return "/search/index";
+        }
+        throw new EmptySearchException("Поиск по пустой строке (null) невозможен");
+
     }
     @GetMapping("/page/{searchWord}")
     @ResponseBody
     public RecommendedBooksDto getNextSearch(@RequestParam("offset") Integer offset,
                                              @RequestParam("limit") Integer limit,
                                              @PathVariable(value = "searchWord", required = false) SearchWordDto searchWordDto) {
+
+
+
         List<BookEntity> recommendedBooks = bookService.getPageOfRecommendedBooks(searchWordDto.getExample(), offset, limit).getContent();
         return new RecommendedBooksDto(recommendedBooks().size(), recommendedBooks);
     }

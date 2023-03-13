@@ -1,7 +1,9 @@
-package com.example.MyBookShopApp.model.entities.Misc;
+package com.example.MyBookShopApp.model.entities.Bookfile2Type;
+import com.example.MyBookShopApp.model.entities.Bookfile2Type.BookFileEntity;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,7 +15,6 @@ public class BookFileType {
     @Column(name = "id_book_file_type")
     private Long bookFileTypeId;
     @Column
-    private String description;
-    @Column
     private String name;
+
 }

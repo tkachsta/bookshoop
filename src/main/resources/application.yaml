@@ -10,7 +10,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     generate-ddl: true
   web:
@@ -20,8 +20,9 @@ spring:
     prefix: classpath:/spring-frontend/
   sql:
     init:
-      data-locations: classpath:users.sql, classpath:tags.sql, classpath:genres.sql, classpath:books.sql, classpath:authors.sql, classpath:balance_transaction.sql, classpath:book2user_type.sql, classpath:book2user.sql, classpath:book2tag.sql, classpath:book2genre.sql, classpath:book2author.sql
+      data-locations: classpath:users.sql, classpath:tags.sql, classpath:genres.sql, classpath:books.sql, classpath:authors.sql, classpath:balance_transaction.sql, classpath:book2user_type.sql, classpath:book2user.sql, classpath:book2tag.sql, classpath:book2genre.sql, classpath:book2author.sql, classpath:book_file_type.sql,  classpath:rating.sql, classpath:book_rating.sql, classpath:book_review.sql
       mode: never
+#      data-locations: classpath:book_rating.sql
   messages:
     basename: lang.messages, lang.mainpage
   liquibase:
@@ -33,4 +34,9 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+upload:
+  path: /Users/verastas/Downloads/data1
+download:
+  path: /Users/verastas/book-files
+
 

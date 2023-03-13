@@ -59,6 +59,7 @@ public class AuthorsController {
     public Object getAuthorPage(@RequestParam(value = "offset", required = false) Integer offset,
                                 @RequestParam(value = "limit", required = false) Integer limit,
                                 @PathVariable String slug, Model model) {
+
         if (offset == null) {
             AuthorEntity author = authorService.getAuthor(slug);
             model.addAttribute("authorBooks", authorService.getAuthorBooks(0, 6, slug).getContent());

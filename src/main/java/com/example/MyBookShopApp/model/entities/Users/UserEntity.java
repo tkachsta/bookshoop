@@ -1,11 +1,13 @@
 package com.example.MyBookShopApp.model.entities.Users;
 
+import com.example.MyBookShopApp.model.entities.Book.BookReview;
+import com.example.MyBookShopApp.model.entities.Rating.BookRating;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,6 +18,10 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
     private Long userId;
+    @OneToMany(mappedBy = "user")
+    private Set<BookReview> bookReview;
+    @OneToMany(mappedBy = "user")
+    private Set<BookRating> userRatings;
     @Column
     private Integer balance;
     @Column
@@ -24,4 +30,5 @@ public class UserEntity {
     private String name;
     @Column(name = "reg_date")
     private Timestamp regDate;
+
 }

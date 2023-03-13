@@ -53,7 +53,7 @@
           </header>
           <div class="Cards Cards_search Cards_refresh">
             <div class="Card" th:each="book : ${searchResults}">
-              <div class="Card-picture"><a th:href="${book.bookId}">
+              <div class="Card-picture"><a th:href="${book.slug}">
                 <img th:src="${book.image}" alt="card.jpg"/>
               </a>
                 <div class="Card-sale"
@@ -65,7 +65,7 @@
                 </div>
               </div>
               <div class="Card-content">
-                <strong class="Card-title"><a href="#" th:text="${book.title}"></a>
+                <strong class="Card-title"><a th:href="${book.slug}" th:text="${book.title}"></a>
                 </strong>
                 <div class="Card-description"  th:each="author : ${book.authors}"
                      th:text="${author.author.firstName + ' ' + author.author.lastName}">

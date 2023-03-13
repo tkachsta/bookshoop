@@ -71,4 +71,8 @@ public class TagService {
         Optional<TagEntity> tag = tagRepository.findById(id);
         return tag.orElse(null);
     }
+
+    public List<Book2Tag> getTagsByBook(String slug) {
+        return book2TagRepository.findByBookSlug(slug);
+    }
 }

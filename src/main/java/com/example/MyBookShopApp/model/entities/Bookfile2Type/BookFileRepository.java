@@ -1,4 +1,4 @@
-package com.example.MyBookShopApp.model.entities.Misc;
+package com.example.MyBookShopApp.model.entities.Bookfile2Type;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

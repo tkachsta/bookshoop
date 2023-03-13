@@ -4,7 +4,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <div class="Card" th:each="book : ${collection}">
         <div class="Card-picture">
-            <a href="#a" th:href="${book.bookId}">
+            <a href="#a" th:href="${book.slug}">
                 <img th:src="${book.image}" alt="card.jpg"/>
             </a>
             <div class="Card-sale"
