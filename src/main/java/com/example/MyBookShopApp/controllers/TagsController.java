@@ -15,20 +15,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/books/tag")
-public class TagsController {
+public class TagsController extends AbstractHeaderController {
     private final TagService tagService;
     @Autowired
     public TagsController(TagService tagService) {
         this.tagService = tagService;
     }
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults() {
-        return new ArrayList<>();
-    }
+
+
+
     @ModelAttribute("currentTag")
     public TagEntity getCurrentTag() {
         return new TagEntity();
@@ -37,6 +32,9 @@ public class TagsController {
     public List<BookEntity> getBooksByTag() {
         return new ArrayList<>();
     }
+
+
+
     @GetMapping(value = "/{id}")
     @ResponseBody
     public Object getBooksByTag (@RequestParam(value = "offset", required = false) Integer offset,
@@ -50,6 +48,7 @@ public class TagsController {
         }
         List<BookEntity> bookEntities =
                 tagService.getBooksByTags(offset, limit, Integer.valueOf(id)).getContent();
+
         return new RecommendedBooksDto(bookEntities.size(), bookEntities);
     }
 }

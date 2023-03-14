@@ -16,20 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class AuthorsController {
+public class AuthorsController extends AbstractHeaderController {
     private final AuthorService authorService;
     @Autowired
     public AuthorsController(AuthorService authorService) {
         this.authorService = authorService;
     }
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults(){
-        return new ArrayList<>();
-    }
+
+
     @ModelAttribute("authorsMap")
     public Map<String, List<AuthorEntity>> authorsMap() {
         return authorService.getAuthorsMap();
@@ -50,6 +44,8 @@ public class AuthorsController {
     public List<String> getLongBio() {
         return new ArrayList<>();
     }
+
+
     @GetMapping("/authors")
     public ModelAndView authorsPage() {
         return new ModelAndView("authors/index");

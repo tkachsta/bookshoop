@@ -17,8 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/postponed")
-public class BookshopPostponedController {
-
+public class BookshopPostponedController extends AbstractHeaderController {
     private final BookService bookService;
     public BookshopPostponedController(BookService bookService) {
         this.bookService = bookService;
@@ -26,14 +25,6 @@ public class BookshopPostponedController {
 
     @ModelAttribute(name = "bookPostponed")
     public List<BookEntity> bookEntities() {
-        return new ArrayList<>();
-    }
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults(){
         return new ArrayList<>();
     }
     @ModelAttribute(name = "booksPostponed")
@@ -46,14 +37,14 @@ public class BookshopPostponedController {
 
         if (postponedContents == null || postponedContents.equals("")) {
             Cookie cookie = new Cookie("postponedContents", slug);
-            cookie.setPath("/postponed");
+            cookie.setPath("/");
             response.addCookie(cookie);
             model.addAttribute("isPostponedEmpty", false);
         } else if (!postponedContents.contains(slug)) {
             StringJoiner stringJoiner = new StringJoiner("/");
             stringJoiner.add(postponedContents).add(slug);
             Cookie cookie = new Cookie("postponedContents", stringJoiner.toString());
-            cookie.setPath("/postponed");
+            cookie.setPath("/");
             response.addCookie(cookie);
             model.addAttribute("isPostponedEmpty", false);
         }
@@ -70,14 +61,14 @@ public class BookshopPostponedController {
         booksSlug.forEach(x -> {
             if (cartContents == null || cartContents.equals("")) {
                 Cookie cookie = new Cookie("cartContents", slug.replace(",", "/"));
-                cookie.setPath("/cart");
+                cookie.setPath("/");
                 response.addCookie(cookie);
                 model.addAttribute("isCartEmpty", false);
             } else if (!cartContents.contains(slug)) {
                 StringJoiner stringJoiner = new StringJoiner("/");
                 stringJoiner.add(cartContents).add(slug);
                 Cookie cookie = new Cookie("cartContents", stringJoiner.toString());
-                cookie.setPath("/cart");
+                cookie.setPath("/");
                 response.addCookie(cookie);
                 model.addAttribute("isCartEmpty", false);
             }
@@ -103,8 +94,8 @@ public class BookshopPostponedController {
             model.addAttribute("allBooksBuy", bookEntities
                     .stream().map(BookEntity::getSlug).collect(Collectors.joining(",")));
         }
-        return new ModelAndView("/postponed");
 
+        return new ModelAndView("/postponed");
     }
 
     @PostMapping("/changeBookStatus/postponed/remove/{slug}")
@@ -116,7 +107,7 @@ public class BookshopPostponedController {
             ArrayList<String> cookieBooks = new ArrayList<>(Arrays.asList(postponedContents.split("/")));
             cookieBooks.remove(slug);
             Cookie cookie = new Cookie("postponedContents", String.join("/", cookieBooks));
-            cookie.setPath("/postponed");
+            cookie.setPath("/");
             response.addCookie(cookie);
             model.addAttribute("isPostponedEmpty", false);
         } else {

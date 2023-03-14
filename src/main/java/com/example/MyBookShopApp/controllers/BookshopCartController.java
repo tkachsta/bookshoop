@@ -1,7 +1,5 @@
 package com.example.MyBookShopApp.controllers;
-
 import com.example.MyBookShopApp.data.BookService;
-import com.example.MyBookShopApp.model.dtos.SearchWordDto;
 import com.example.MyBookShopApp.model.entities.Book.BookEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,22 +13,14 @@ import java.util.StringJoiner;
 
 @RestController
 @RequestMapping("/cart")
-public class BookshopCartController {
-
+public class BookshopCartController extends AbstractHeaderController {
     private final BookService bookService;
-
     public BookshopCartController(BookService bookService) {
         this.bookService = bookService;
     }
 
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults(){
-        return new ArrayList<>();
-    }
+
+
     @ModelAttribute(name = "bookCart")
     public List<BookEntity> bookEntities() {
         return new ArrayList<>();
@@ -40,6 +30,8 @@ public class BookshopCartController {
     @ModelAttribute(name = "cartOldPrice")
     public Integer getCartOldPrice() {return 0;}
 
+
+
     @PostMapping("/changeBookStatus/{slug}")
     public ModelAndView handleChangeBookStatus(@PathVariable("slug") String slug,
                                                @CookieValue(name = "cartContents", required = false) String cartContents,
@@ -47,14 +39,14 @@ public class BookshopCartController {
 
         if (cartContents == null || cartContents.equals("")) {
             Cookie cookie = new Cookie("cartContents", slug.replace(",", "/"));
-            cookie.setPath("/cart");
+            cookie.setPath("/");
             response.addCookie(cookie);
             model.addAttribute("isCartEmpty", false);
         } else if (!cartContents.contains(slug)) {
             StringJoiner stringJoiner = new StringJoiner("/");
             stringJoiner.add(cartContents).add(slug);
             Cookie cookie = new Cookie("cartContents", stringJoiner.toString());
-            cookie.setPath("/cart");
+            cookie.setPath("/");
             response.addCookie(cookie);
             model.addAttribute("isCartEmpty", false);
         }
@@ -64,6 +56,8 @@ public class BookshopCartController {
     @GetMapping
     public ModelAndView handleCartRequest(@CookieValue(value = "cartContents", required = false) String cartContents,
                                           Model model) {
+
+
 
         if (cartContents == null || cartContents.equals("")) {
             model.addAttribute("isCartEmpty", true);
@@ -77,6 +71,7 @@ public class BookshopCartController {
             model.addAttribute("cartPrice", bookEntities.stream().mapToInt(BookEntity::getPrice).sum());
             model.addAttribute("cartOldPrice", bookEntities.stream().mapToInt(BookEntity::getPriceOld).sum());
         }
+
         return new ModelAndView("/cart");
 
     }
@@ -90,7 +85,7 @@ public class BookshopCartController {
             ArrayList<String> cookieBooks = new ArrayList<>(Arrays.asList(cartContents.split("/")));
             cookieBooks.remove(slug);
             Cookie cookie = new Cookie("cartContents", String.join("/", cookieBooks));
-            cookie.setPath("/cart");
+            cookie.setPath("/");
             response.addCookie(cookie);
             model.addAttribute("isCartEmpty", false);
         } else {

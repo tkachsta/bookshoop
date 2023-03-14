@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/documents")
-public class DocumentsController {
+public class DocumentsController extends AbstractHeaderController {
 
 
     @GetMapping

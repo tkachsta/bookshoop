@@ -19,20 +19,15 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/books")
-public class RecentBooksController {
+public class RecentBooksController extends AbstractHeaderController {
     private final BookService bookService;
     @Autowired
     public RecentBooksController(BookService bookService) {
         this.bookService = bookService;
     }
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults() {
-        return new ArrayList<>();
-    }
+
+
+
     @ModelAttribute("recentBooksPage")
     public List<BookEntity> getRecentBooksPage() {
         return new ArrayList<>();
@@ -41,6 +36,9 @@ public class RecentBooksController {
     public TagEntity getCurrentTag() {
         return new TagEntity();
     }
+
+
+
     @GetMapping("/recommended")
     @ResponseBody
     public RecommendedBooksDto getBookPage(@RequestParam("offset") Integer offset,
@@ -54,7 +52,8 @@ public class RecentBooksController {
     public Object getRecentPageBooks(@RequestParam(value = "offset", required = false) Integer offset,
                                      @RequestParam(value = "limit", required = false) Integer limit,
                                      @RequestParam(value = "from", required = false) String from,
-                                     @RequestParam(value = "to", required = false) String to, Model model) {
+                                     @RequestParam(value = "to", required = false) String to,
+                                     Model model) {
         return bookService.getPageOfRecentBooks(from, to, offset, limit, model);
     }
 

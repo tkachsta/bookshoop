@@ -16,20 +16,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/books/genres")
-public class GenresController {
+public class GenresController extends AbstractHeaderController {
     private final GenreService genreService;
     @Autowired
     public GenresController(GenreService genreService) {
         this.genreService = genreService;
     }
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults() {
-        return new ArrayList<>();
-    }
+
     @ModelAttribute("currentGenre")
     public String getCurrentTag() {
         return new String();

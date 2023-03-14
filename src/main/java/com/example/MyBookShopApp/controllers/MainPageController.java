@@ -1,46 +1,35 @@
 package com.example.MyBookShopApp.controllers;
 import com.example.MyBookShopApp.data.BookService;
+import com.example.MyBookShopApp.data.ReviewService;
 import com.example.MyBookShopApp.data.TagService;
 import com.example.MyBookShopApp.model.dtos.SearchWordDto;
-import com.example.MyBookShopApp.model.dtos.rating.BookRating;
 import com.example.MyBookShopApp.model.dtos.tags.TagDto;
 import com.example.MyBookShopApp.model.entities.Book.BookEntity;
-import com.example.MyBookShopApp.model.entities.Book2Author.Book2Author;
-import com.example.MyBookShopApp.model.entities.Tag.TagEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.awt.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
-public class MainPageController {
+public class MainPageController extends AbstractHeaderController {
     private final BookService bookService;
     private final TagService tagService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public MainPageController(BookService bookService, TagService tagService) {
+    public MainPageController(BookService bookService, TagService tagService, ReviewService reviewService) {
         this.bookService = bookService;
         this.tagService = tagService;
-    }
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults(){
-        return new ArrayList<>();
+        this.reviewService = reviewService;
     }
     @ModelAttribute("recommendedBooks")
     public List<BookEntity> recommendedBooks(){
@@ -60,13 +49,10 @@ public class MainPageController {
     }
 
 
-    @Operation(summary = "Get main page")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found main page")
-    })
+
     @GetMapping()
-    public String mainPage() {
-        return "index";
+    public ModelAndView mainPage() {
+        return new ModelAndView("index");
     }
     @GetMapping("/signin")
     public String signingPage() {
@@ -104,6 +90,13 @@ public class MainPageController {
         bookService.rateBook(bookId, value);
         return new ModelAndView("redirect:/books/" + bookId);
 
+    }
+    @PostMapping(value = "/rateBookReview")
+    public ResponseEntity<?> rateBookReview(@RequestParam (name = "reviewid") Integer reviewId,
+                                         @RequestParam (name = "value") Integer value) {
+
+        reviewService.rateReview(reviewId, value);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

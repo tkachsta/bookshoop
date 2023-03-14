@@ -1,4 +1,3 @@
-
 <!--END-->
 <!--END--><!DOCTYPE html><!--[if IE 7]>
 <html class="ie7" lang="ru">
@@ -371,9 +370,9 @@
               <h3 class="Product-comments-title">Для данной книги не написаны рецензии. Вы можете быть первыми.</h3>
             </div>
           </div>
-          <div class="Comments" th:each="review : ${bookReviews}">
+          <div class="Comments" >
 
-            <div class="Comment">
+            <div class="Comment" th:each="review : ${bookReviews}">
               <div class="Comment-column Comment-column_pict">
                 <div class="Comment-avatar">
                 </div>
@@ -395,7 +394,7 @@
                         </span>
                       </span>
                       </span>
-                    </strong><span class="Comment-date" th:text="${review.time}">17.04.2020 16:40</span>
+                    </strong><span class="Comment-date" th:text="${review.getFormattedDate()}">17.04.2020 16:40</span>
                   </div>
                 </header>
                 <div class="Comment-content">
@@ -411,11 +410,11 @@
 
                     <div class="Comment-footer">
                       <div class="Comment-appeal">
-                        <button class="btn btn_white btn_like" data-btntype="check" data-check="false" data-btnradio="two2" data-likeid="1111"><span class="btn-icon"><img
-                                src="/assets/img/icons/comment/like.svg" alt="like.svg"/></span><span class="btn-content">200</span>
+                        <button class="btn btn_white btn_like" data-btntype="check" data-check="false" data-btnradio="two2" th:data-likeid="${review.bookreviewId}"><span class="btn-icon"><img
+                                src="/assets/img/icons/comment/like.svg" alt="like.svg"/></span><span class="btn-content" th:text="${review.reviewLikes()}">200</span>
                         </button>
-                        <button class="btn btn_white btn_dislike" data-btntype="check" data-check="false" data-btnradio="two2" data-likeid="1111"><span class="btn-icon"><img
-                                src="/assets/img/icons/comment/dislike.svg" alt="dislike.svg"/></span><span class="btn-content">100</span>
+                        <button class="btn btn_white btn_dislike" data-btntype="check" data-check="false" data-btnradio="two2" th:data-likeid="${review.bookreviewId}"><span class="btn-icon"><img
+                                src="/assets/img/icons/comment/dislike.svg" alt="dislike.svg"/></span><span class="btn-content" th:text="${review.reviewDislikes()}">100</span>
                         </button>
                       </div>
                       <button class="Spoiler-trigger btn btn_primary btn_nr" type="button" data-hidetext="Показать отзыв полностью" data-showtext="Свернуть отзыв" >

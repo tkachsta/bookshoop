@@ -3,7 +3,6 @@ import com.example.MyBookShopApp.data.BookService;
 import com.example.MyBookShopApp.data.ResourceStorage;
 import com.example.MyBookShopApp.data.ReviewService;
 import com.example.MyBookShopApp.data.TagService;
-import com.example.MyBookShopApp.model.dtos.SearchWordDto;
 import com.example.MyBookShopApp.model.entities.Book.BookEntity;
 import com.example.MyBookShopApp.model.entities.Book.BookRepository;
 import com.example.MyBookShopApp.model.entities.Book2Tag.Book2Tag;
@@ -17,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/books")
-public class BookController {
+public class BookController extends AbstractHeaderController {
     private final BookService bookService;
     private final ReviewService reviewService;
     private final TagService tagService;
@@ -44,14 +42,9 @@ public class BookController {
         this.storage = storage;
         this.bookRepository = bookRepository;
     }
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults() {
-        return new ArrayList<>();
-    }
+
+
+
     @ModelAttribute("currentBook")
     public BookEntity getCurrentBook() {
         return new BookEntity();
@@ -61,9 +54,12 @@ public class BookController {
         return new ArrayList<>();
     }
 
+
+
     @GetMapping(value = {"/{slug}","/books/{slug}"})
     @ResponseBody
-    public ModelAndView getAuthorPage(@PathVariable String slug, Model model) {
+    public ModelAndView getBookPage(@PathVariable String slug, Model model) {
+
         BookEntity book =  bookService.getBook(slug);
         model.addAttribute("currentBook",book);
         model.addAttribute("bookTags", tagService.getTagsByBook(slug));

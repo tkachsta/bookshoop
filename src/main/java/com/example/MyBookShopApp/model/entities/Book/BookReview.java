@@ -9,9 +9,11 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,13 +21,15 @@ import java.util.List;
 @Table(name = "book_review")
 public class BookReview {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_bookreview")
-    private Long bookreviewId;
+    private Integer bookreviewId;
     @Column(columnDefinition = "TEXT")
     private String text;
     @Column
     private Timestamp time;
+    @OneToMany(mappedBy = "bookReview")
+    private Set<BookReviewLike> reviewLikes;
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_rating", referencedColumnName = "id_rating")
     private BookRating rating;
@@ -61,6 +65,15 @@ public class BookReview {
             ratingStarList.add(ratingStar);
         }
         return ratingStarList;
+    }
+    public String getFormattedDate() {
+        return new SimpleDateFormat("dd.MM.yyyy HH:mm").format(this.time);
+    }
+    public long reviewLikes() {
+        return this.reviewLikes.stream().filter(v -> v.getValue() == 1).toList().size();
+    }
+    public long reviewDislikes() {
+        return this.reviewLikes.stream().filter(v -> v.getValue() == -1).toList().size();
     }
 
 

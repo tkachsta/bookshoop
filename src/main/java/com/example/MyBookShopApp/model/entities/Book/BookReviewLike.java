@@ -25,4 +25,7 @@ public class BookReviewLike {
     private Timestamp time;
     @Column
     private Integer value;
+
+
+
 }

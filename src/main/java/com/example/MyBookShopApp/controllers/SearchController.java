@@ -13,28 +13,26 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/search")
-public class SearchController {
+public class SearchController extends AbstractHeaderController {
 
     private final BookService bookService;
-
     public SearchController(BookService bookService) {
         this.bookService = bookService;
     }
-    @ModelAttribute("searchWordDto")
-    public SearchWordDto searchWordDto() {
-        return new SearchWordDto();
-    }
-    @ModelAttribute("searchResults")
-    public List<BookEntity> searchResults() {
-        return new ArrayList<>();
-    }
+
+
+
     @ModelAttribute("recommendedBooks")
     public List<BookEntity> recommendedBooks(){
         return bookService.getRecommendedBooksPage(0, 6).getContent();
     }
+
+
+
     @GetMapping(value = {"","/{searchWord}"})
     public String getSearchResults( @PathVariable(value = "searchWord", required = false) SearchWordDto searchWordDto,
                                     Model model) throws EmptySearchException {
+
         if (searchWordDto != null) {
             model.addAttribute("searchWordDto", searchWordDto);
             model.addAttribute("searchResults",
@@ -51,10 +49,9 @@ public class SearchController {
                                              @RequestParam("limit") Integer limit,
                                              @PathVariable(value = "searchWord", required = false) SearchWordDto searchWordDto) {
 
-
-
         List<BookEntity> recommendedBooks = bookService.getPageOfRecommendedBooks(searchWordDto.getExample(), offset, limit).getContent();
         return new RecommendedBooksDto(recommendedBooks().size(), recommendedBooks);
+
     }
 }
 
