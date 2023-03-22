@@ -1,24 +1,32 @@
 package com.example.MyBookShopApp.controllers;
-import com.example.MyBookShopApp.data.BookService;
+import com.example.MyBookShopApp.data.LinkBook2UserService;
+import com.example.MyBookShopApp.data.booklifecycle.CartStatus;
+import com.example.MyBookShopApp.data.booklifecycle.PostponedStatus;
 import com.example.MyBookShopApp.model.entities.Book.BookEntity;
+import com.example.MyBookShopApp.model.response.FalseResponse;
+import com.example.MyBookShopApp.model.response.TrueResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 
 @RestController
 @RequestMapping("/cart")
 public class BookshopCartController extends AbstractHeaderController {
-    private final BookService bookService;
-    public BookshopCartController(BookService bookService) {
-        this.bookService = bookService;
+    private final LinkBook2UserService linkBook2UserService;
+    private final CartStatus cartStatus;
+    private final PostponedStatus postponedStatus;
+    public BookshopCartController(LinkBook2UserService linkBook2UserService,
+                                  CartStatus cartStatus,
+                                  PostponedStatus postponedStatus) {
+        this.linkBook2UserService = linkBook2UserService;
+        this.cartStatus = cartStatus;
+        this.postponedStatus = postponedStatus;
     }
-
 
 
     @ModelAttribute(name = "bookCart")
@@ -31,72 +39,42 @@ public class BookshopCartController extends AbstractHeaderController {
     public Integer getCartOldPrice() {return 0;}
 
 
-
-    @PostMapping("/changeBookStatus/{slug}")
-    public ModelAndView handleChangeBookStatus(@PathVariable("slug") String slug,
-                                               @CookieValue(name = "cartContents", required = false) String cartContents,
-                                               HttpServletResponse response, Model model) {
-
-        if (cartContents == null || cartContents.equals("")) {
-            Cookie cookie = new Cookie("cartContents", slug.replace(",", "/"));
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            model.addAttribute("isCartEmpty", false);
-        } else if (!cartContents.contains(slug)) {
-            StringJoiner stringJoiner = new StringJoiner("/");
-            stringJoiner.add(cartContents).add(slug);
-            Cookie cookie = new Cookie("cartContents", stringJoiner.toString());
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            model.addAttribute("isCartEmpty", false);
-        }
-
-        return new ModelAndView("redirect:/books/" + slug);
-    }
     @GetMapping
-    public ModelAndView handleCartRequest(@CookieValue(value = "cartContents", required = false) String cartContents,
-                                          Model model) {
+    public ModelAndView handleCartRequest(Model model) {
 
-
-
-        if (cartContents == null || cartContents.equals("")) {
+        List<BookEntity> bookEntities = cartStatus.getStatusCollection();
+        if (bookEntities.isEmpty()) {
             model.addAttribute("isCartEmpty", true);
         } else {
             model.addAttribute("isCartEmpty", false);
-            cartContents = cartContents.startsWith("/") ? cartContents.substring(1) : cartContents;
-            cartContents = cartContents.endsWith("/") ? cartContents.substring(0, cartContents.length() - 1) : cartContents;
-            String[] cookieSlugs = cartContents.split("/");
-            List<BookEntity> bookEntities = bookService.getBooksBySlugList(Arrays.asList(cookieSlugs));
-            model.addAttribute("bookCart", bookEntities);
             model.addAttribute("cartPrice", bookEntities.stream().mapToInt(BookEntity::getPrice).sum());
             model.addAttribute("cartOldPrice", bookEntities.stream().mapToInt(BookEntity::getPriceOld).sum());
         }
-
         return new ModelAndView("/cart");
 
     }
+    @PostMapping("/changeBookStatus/{slug}")
+    public ResponseEntity<Object> handleChangeBookStatus(@PathVariable("slug") String slug, Model model) {
 
-    @PostMapping("/changeBookStatus/cart/remove/{slug}")
-    public ModelAndView handleRemoveBookFromCartRequest(@PathVariable("slug") String slug,
-                                                        @CookieValue(name = "cartContents", required = false) String cartContents,
-                                                        HttpServletResponse response, Model model) {
-
-        if (cartContents != null && !cartContents.equals("")) {
-            ArrayList<String> cookieBooks = new ArrayList<>(Arrays.asList(cartContents.split("/")));
-            cookieBooks.remove(slug);
-            Cookie cookie = new Cookie("cartContents", String.join("/", cookieBooks));
-            cookie.setPath("/");
-            response.addCookie(cookie);
+        if (linkBook2UserService.linkBookWithUser(slug, postponedStatus, cartStatus)) {
             model.addAttribute("isCartEmpty", false);
-        } else {
-            model.addAttribute("isCartEmpty", true);
+            return new ResponseEntity<>(new TrueResponse(true), HttpStatus.OK);
         }
+        return new ResponseEntity<>(new FalseResponse(false, "Не удается обновить статус книги"),
+                HttpStatus.NO_CONTENT);
 
-        return new ModelAndView("redirect:/books/" + slug);
     }
+    @PostMapping("/changeBookStatus/cart/remove/{slug}")
+    public ResponseEntity<Object> handleRemoveBookFromCartRequest(@PathVariable("slug") String slug, Model model) {
 
+        if(linkBook2UserService.unlinkBookWithUser(slug, cartStatus)) {
+            model.addAttribute("isCartEmpty", false);
+            return new ResponseEntity<>(new TrueResponse(true), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new FalseResponse(false, "Не удается удалить книгу из корзины"),
+                HttpStatus.NO_CONTENT);
 
-
+    }
 
 
 }

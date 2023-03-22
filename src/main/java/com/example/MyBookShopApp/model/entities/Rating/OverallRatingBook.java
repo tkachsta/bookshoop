@@ -13,8 +13,8 @@ import java.util.List;
 @Setter
 public class OverallRatingBook {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_rating")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_rating", nullable = false)
     private Integer ratingId;
     @Column(name = "one_star")
     private Integer oneStarRating;

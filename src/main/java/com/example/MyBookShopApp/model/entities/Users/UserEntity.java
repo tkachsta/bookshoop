@@ -16,8 +16,8 @@ import java.util.Set;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user")
-    private Long userId;
+    @Column(name = "id_user", nullable = false)
+    private Integer userId;
     @OneToMany(mappedBy = "user")
     private Set<BookReview> bookReview;
     @OneToMany(mappedBy = "user")
@@ -30,5 +30,13 @@ public class UserEntity {
     private String name;
     @Column(name = "reg_date")
     private Timestamp regDate;
+
+
+    @Column
+    private String email;
+    @Column
+    private String phone;
+    @Column
+    private String password;
 
 }

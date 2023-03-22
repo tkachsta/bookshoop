@@ -3,9 +3,12 @@ import com.example.MyBookShopApp.model.entities.Book2Author.Book2Author;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Set;
+
 public class AuthorsStringSerializer extends StdSerializer<Set<Book2Author>> {
     protected AuthorsStringSerializer(Class<Set<Book2Author>> t) {
         super(t);
@@ -17,6 +20,8 @@ public class AuthorsStringSerializer extends StdSerializer<Set<Book2Author>> {
     public void serialize(Set<Book2Author> book2Authors,
                           JsonGenerator jsonGenerator,
                           SerializerProvider serializerProvider) throws IOException {
+
+
         String authors = "";
         for (Book2Author x : book2Authors) {
             String author = x.getAuthor().getFirstName() + " " + x.getAuthor().getLastName();

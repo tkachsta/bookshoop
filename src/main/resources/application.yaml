@@ -1,6 +1,15 @@
 server:
   port: 8085
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+      tracking-modes: cookie
 spring:
+  security:
+    user:
+      name: admin
+      password: admin
   datasource:
     username: postgres
     password: root
@@ -9,9 +18,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
     hibernate:
       ddl-auto: update
-    show-sql: true
+
+    show-sql: false
     generate-ddl: true
   web:
     resources:
@@ -20,13 +31,13 @@ spring:
     prefix: classpath:/spring-frontend/
   sql:
     init:
-#      data-locations: classpath:users.sql, classpath:tags.sql, classpath:genres.sql, classpath:books.sql, classpath:authors.sql, classpath:balance_transaction.sql, classpath:book2user_type.sql, classpath:book2user.sql, classpath:book2tag.sql, classpath:book2genre.sql, classpath:book2author.sql, classpath:book_file_type.sql,  classpath:rating.sql, classpath:book_rating.sql, classpath:book_review.sql, classpath:book_review_like.sql
+      data-locations: classpath:users.sql, classpath:tags.sql, classpath:genres.sql, classpath:books.sql, classpath:authors.sql, classpath:balance_transaction.sql, classpath:book2user_type.sql, classpath:book2user.sql, classpath:book2tag.sql, classpath:book2genre.sql, classpath:book2author.sql, classpath:book_file_type.sql,  classpath:rating.sql, classpath:book_rating.sql, classpath:book_review.sql, classpath:book_review_like.sql
       mode: never
-      data-locations: classpath:book_review_like.sql
+#      data-locations: classpath:book_review_like.sql
   messages:
     basename: lang.messages, lang.mainpage
   liquibase:
-    enabled: true
+    enabled: off
     change-log: classpath:/db.changelogs/db.changelog-master.xml
   jackson:
     serialization:
@@ -38,5 +49,19 @@ upload:
   path: /Users/verastas/Downloads/data1
 download:
   path: /Users/verastas/book-files
+
+
+auth:
+  secret: secret
+
+cart-model:
+  statuses:
+    kept: KEPT
+    cart: CART
+    paid: PAID
+    archived: ARCHIVED
+    unlinked: UNLINK
+
+
 
 

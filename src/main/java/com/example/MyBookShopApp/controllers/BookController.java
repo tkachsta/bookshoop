@@ -1,16 +1,19 @@
 package com.example.MyBookShopApp.controllers;
-import com.example.MyBookShopApp.data.BookService;
-import com.example.MyBookShopApp.data.ResourceStorage;
-import com.example.MyBookShopApp.data.ReviewService;
-import com.example.MyBookShopApp.data.TagService;
+import com.example.MyBookShopApp.data.*;
+import com.example.MyBookShopApp.data.booklifecycle.StatusHub;
 import com.example.MyBookShopApp.model.entities.Book.BookEntity;
 import com.example.MyBookShopApp.model.entities.Book.BookRepository;
 import com.example.MyBookShopApp.model.entities.Book2Tag.Book2Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,26 +24,34 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/books")
 public class BookController extends AbstractHeaderController {
     private final BookService bookService;
     private final ReviewService reviewService;
+    private final UserService userService;
     private final TagService tagService;
     private final ResourceStorage storage;
     private final BookRepository bookRepository;
+    private final StatusHub statusHub;
+
+
+    Logger log = LoggerFactory.getLogger(AbstractHeaderController.class);
+
+
     @Autowired
     public BookController(BookService bookService,
                           ReviewService reviewService, TagService tagService,
                           ResourceStorage storage,
-                          BookRepository bookRepository) {
+                          BookRepository bookRepository, UserService userService, StatusHub statusHub) {
         this.bookService = bookService;
         this.reviewService = reviewService;
         this.tagService = tagService;
         this.storage = storage;
         this.bookRepository = bookRepository;
+        this.userService = userService;
+        this.statusHub = statusHub;
     }
 
 
@@ -56,14 +67,22 @@ public class BookController extends AbstractHeaderController {
 
 
 
-    @GetMapping(value = {"/{slug}","/books/{slug}"})
+    @GetMapping(value = "/{slug}")
     @ResponseBody
     public ModelAndView getBookPage(@PathVariable String slug, Model model) {
+
+        String status = statusHub.getBookCurrentStatus(slug).getCurrentStatus();
+        log.info(status);
+
+
 
         BookEntity book =  bookService.getBook(slug);
         model.addAttribute("currentBook",book);
         model.addAttribute("bookTags", tagService.getTagsByBook(slug));
         model.addAttribute("bookReviews", reviewService.getBookReviews(book));
+        model.addAttribute("typeOfBookLink", status);
+        model.addAttribute("bookIsBought", statusHub.bookIsBought(slug));
+
         return new ModelAndView("/books/slug");
 
     }
@@ -85,13 +104,8 @@ public class BookController extends AbstractHeaderController {
     public ResponseEntity<ByteArrayResource> bookFile(@PathVariable("hash") String hash) throws IOException {
 
         Path path = storage.getBookFilePath(hash);
-        Logger.getLogger(this.getClass().getSimpleName()).info("book file path: " + path);
-
         MediaType mediaType = storage.getBookFileMime(hash);
-        Logger.getLogger(this.getClass().getSimpleName()).info("book file mime type: " + mediaType.getType());
-
         byte[] data = storage.getBookFileByteArray(hash);
-        Logger.getLogger(this.getClass().getSimpleName()).info("book file data length: " + data.length);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + path.getFileName().toString())

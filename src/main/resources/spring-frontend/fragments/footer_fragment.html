@@ -34,6 +34,7 @@
                     </li>
                 </ul>
             </div>
+
             <div class="row-block">
                 <ul class="menu menu_vt Footer-menu">
                     <li class="menu-item"><a class="menu-link" th:href="@{/}" th:text="#{topbar.main}"></a>
@@ -56,6 +57,20 @@
                     </li>
                 </ul>
             </div>
+
+            <div class="row-block" th:if="${isAuthenticated}">
+                <ul class="menu menu_vt Footer-menu">
+                    <li class="menu-item"><a class="menu-link" th:href="@{/my}" th:text="#{middlebar.mybooks}">Мои книги (55)</a>
+                    </li>
+                    <li class="menu-item"><a class="menu-link" th:href="@{/cart}" th:text="#{middlebar.cart} + ' ('+${booksNumberToBuy.size()}+')'">Корзина (7)</a>
+                    </li>
+                    <li class="menu-item"><a class="menu-link" th:href="@{/postponed}" th:text="#{middlebar.postponed} + ' ('+${booksNumberPostponed.size()}+')'">Отложено (2)</a>
+                    </li>
+                    <li class="menu-item"><a class="menu-link" th:href="@{/profile}" th:text="#{middlebar.myprofile}">Мой профиль</a>
+                    </li>
+                </ul>
+            </div>
+
             <div class="row-block">
                 <ul class="menu menu_vt Footer-menu">
                     <li class="menu-item"><a class="menu-link" th:href="@{/signin}" th:text="#{bottombar.signin}"></a>

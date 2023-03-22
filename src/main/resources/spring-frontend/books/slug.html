@@ -29,6 +29,8 @@
   <link type="text/css" rel="stylesheet" href="/spring-frontend/assets/css/DownloadBookWindowStyle.css">
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   <script defer src="/assets/js/scripts.min.js?v=87821122"></script>
+<!--  <meta id="_csrf" name="" th:content="${_csrf.token}"/>-->
+<!--  <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>-->
 </head>
 <body class="Site">
   <header th:replace="~{fragments/header_fragment :: headFragment}"></header>
@@ -36,9 +38,9 @@
     <div class="wrap">
       <main class="Middle-main">
         <ul class="breadcrumbs">
-          <li class="breadcrumbs-item"><a href="/index.html">Главная</a>
+          <li class="breadcrumbs-item"><a th:href="@{/}">Главная</a>
           </li>
-          <li class="breadcrumbs-item"><a href="/genres/index.html">Книги</a>
+          <li class="breadcrumbs-item"><a th:href="@{/genres}">Книги</a>
           </li>
           <li class="breadcrumbs-item breadcrumbs-item_current"><span th:text="${currentBook.title}"></span>
           </li>
@@ -47,7 +49,7 @@
           <div class="ProductCard">
             <div class="ProductCard-look">
               <form id="imgForm" method="POST" enctype="multipart/form-data"
-                    th:action="${'/books/'+ currentBook.slug+'/img/save'}">
+                    th:action="${'/books/'+ currentBook.slug + '/img/save'}">
                 <div class="ProductCard-photo" id="uploadButton"><img th:src="${currentBook.image}"
                                                                       alt="card.jpg"/>
                 </div>
@@ -264,7 +266,7 @@
                     </div>
                   </button>
                 </div>
-                <div class="ProductCard-assessment"><span class="ProductCard-titleProp">Оцените книгу:</span><span
+                <div class="ProductCard-assessment" th:if="${isAuthenticated}"><span class="ProductCard-titleProp">Оцените книгу:</span><span
                         class="Rating Rating_input" th:data-bookid="${currentBook.slug}"><span class="Rating-stars"><span class="Rating-star">
                         <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18">
                           <g>
@@ -320,33 +322,43 @@
               </div>
               <div class="ProductCard-cart">
                 <div class="ProductCard-cartElement">
-                  <button class="btn btn_primary btn_outline" data-sendstatus="KEPT"
+                  <button class="btn btn_primary btn_outline"
+                          th:if="${!bookIsBought}"
+                          th:data-sendstatus="${!typeOfBookLink.contains('KEPT')} ? 'KEPT' : 'UNLINK'"
+                          data-th-attr="data-bookid = ${currentBook.slug}, data-statustype = ${!typeOfBookLink.contains('KEPT')} ? '/postponed' : '/unlink/postponed'"
                           data-btntype="check" data-btnradio="buyblock" data-check="false"
-                          data-th-attr="data-bookid = ${currentBook.slug}, data-statustype = '/postponed'"
-                          data-alttext="Отложена"><span class="btn-icon"><img
-                          src="/assets/img/icons/heart.svg"
-                          alt="heart.svg"/></span><span class="btn-content">Отложить</span>
+                          th:data-alttext="${!typeOfBookLink.contains('KEPT')} ? 'Отложена' : 'В отложенное'"><span class="btn-icon"><img src="/assets/img/icons/heart.svg" alt="heart.svg"/></span>
+                    <span class="btn-content" th:text="${!typeOfBookLink.contains('KEPT')} ? #{middlebar.postpone} : #{middlebar.postponed}"></span>
                   </button>
                 </div>
                 <div class="ProductCard-cartElement">
-                  <button class="btn btn_primary btn_outline" data-sendstatus="CART"
-                          data-th-attr="data-bookid = ${currentBook.slug}, data-statustype = '/cart'"
+                  <button class="btn btn_primary btn_outline"
+                          th:if="${!bookIsBought}"
+                          th:data-sendstatus="${!typeOfBookLink.contains('CART')} ? 'CART' : 'UNLINK'"
+                          data-th-attr="data-bookid = ${currentBook.slug}, data-statustype = ${!typeOfBookLink.contains('CART')} ? '/cart' : '/unlink/cart'"
                           data-btntype="check" data-btnradio="buyblock" data-check="false"
                           data-alttext="В корзине"><span class="btn-icon"><img
                           src="/assets/img/icons/shopping-basket.svg"
-                          alt="shopping-basket.svg"/></span><span class="btn-content">Купить</span>
+                          alt="shopping-basket.svg"/></span><span
+                          class="btn-content" th:text="${!typeOfBookLink.contains('CART')} ? #{middlebar.buy} : #{middlebar.cart}">Купить</span>
                   </button>
                 </div>
               </div>
-              <div class="ProductCard-cart">
+              <div class="ProductCard-cart" th:if="${bookIsBought}">
                 <div class="ProductCard-cartElement"><a
                         class="btn btn_primary btn_outline" href="#"><span
                         class="btn-icon"><img
                         src="/assets/img/icons/download.svg" alt="download.svg"/></span><span
                         class="btn-content">Скачать</span></a>
                 </div>
-                <div class="ProductCard-cartElement">
-                  <button class="btn btn_primary btn_outline" data-sendstatus="ARCHIVED" data-bookid="[1111]" data-btntype="check" data-btnradio="buyblock" data-check="false" data-alttext="Вернуть из архива"><span class="btn-icon"><img src="/assets/img/icons/archive.svg" alt="archive.svg"/></span><span class="btn-content">В архив</span>
+                <div class="ProductCard-cartElement" th:if="${bookIsBought}">
+                  <button class="btn btn_primary btn_outline" data-sendstatus="ARCHIVED"
+                          data-th-attr="data-bookid=${currentBook.slug},
+                                        data-statustype = ${typeOfBookLink.contains('ARCHIVED')} ? '/archived/fromarchive' : '/archived/toarchive'"
+                          data-btntype="check" data-btnradio="buyblock"
+                          data-check="false" data-alttext="Вернуть из архива"><span
+                          class="btn-icon"><img src="/assets/img/icons/archive.svg" alt="archive.svg"/></span><span
+                          class="btn-content" th:text = "${typeOfBookLink.contains('ARCHIVED')} ? 'Из архива' : 'В архив'"></span>
                   </button>
                 </div>
               </div>
@@ -371,6 +383,20 @@
             </div>
           </div>
           <div class="Comments" >
+
+            <strong class="Comments-title" th:if="${isAuthenticated}">Написать отзыв</strong>
+            <div class="Comments-addComment" th:if="${isAuthenticated}">
+              <form class="form" action="#" method="post" data-bookid="1111">
+                <div class="form-group">
+                  <textarea class="form-textarea Comments-review" name="review" id="review" placeholder="Текст отзыва" data-validate="require"></textarea>
+                </div>
+                <div class="form-group Comments-sendReview">
+                  <button class="btn btn_warning" type="submit">Отправить отзыв
+                  </button>
+                </div>
+              </form>
+            </div>
+
 
             <div class="Comment" th:each="review : ${bookReviews}">
               <div class="Comment-column Comment-column_pict">

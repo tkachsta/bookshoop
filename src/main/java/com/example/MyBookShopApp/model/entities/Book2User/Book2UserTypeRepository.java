@@ -3,4 +3,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface Book2UserTypeRepository extends JpaRepository<Book2UserType, Integer> {
+    Book2UserType findAllByCodeIs(String code);
+
 }

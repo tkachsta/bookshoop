@@ -60,7 +60,7 @@
               </div>
             </form>
           </div>
-          <div th:replace="~{fragments/books_pool_fragment :: popularBooks (${recentBooksPage}, 'recent', '')}"></div>
+          <div th:replace="~{fragments/books_pool_fragment :: popularBooks (${recentBooksPage}, 'recent', '', ${fromSearch}, ${toSearch})}"></div>
         </div>
       </main>
     </div>

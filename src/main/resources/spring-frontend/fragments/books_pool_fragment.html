@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<div class="Cards Cards_refresh" th:fragment="popularBooks (collection, refreshshow, refreshid)">
+<div class="Cards Cards_refresh" th:fragment="popularBooks (collection, refreshshow, refreshid, refreshfrom, refreshto)">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <div class="Card" th:each="book : ${collection}">
         <div class="Card-picture">
-            <a href="#a" th:href="${book.slug}">
+            <a th:href="'/books/' + ${book.slug}">
                 <img th:src="${book.image}" alt="card.jpg"/>
             </a>
             <div class="Card-sale"
@@ -14,6 +14,14 @@
                 <span class="Card-ribbonText"
                       th:text="${book.bestseller} ? 'Бестселлер' : ''"></span>
             </div>
+            <a class="Card-status" title="В корзине" th:if="${book.status} == 'CART'"><img
+                    src="/assets/img/icons/shopping-basket.svg" alt="shopping-basket.svg"/></a>
+            <a class="Card-status" title="Отложена" th:if="${book.status} == 'KEPT'"><img
+                    src="/assets/img/icons/heart.svg" alt="heart.svg"/></a>
+            <a class="Card-status" title="Куплена" th:if="${book.status} == 'PAID'"><img
+                    src="/assets/img/icons/check.svg" alt="check.svg"/></a>
+            <a class="Card-status" title="В архиве" th:if="${book.status} == 'ARCHIVED'"><img
+                    src="/assets/img/icons/archive.svg" alt="archive.svg"/></a>
         </div>
         <div class="Card-content">
             <strong class="Card-title">
@@ -30,10 +38,10 @@
     <div class="Cards-footer Cards-footer_center"><a class="btn btn_primary" href="#"
                                                      data-th-attr=
                                                              "data-refreshshow=${refreshshow},
-                                                              data-refreshid=${refreshid}"
+                                                              data-refreshid=${refreshid},
+                                                              data-refreshfrom=${refreshfrom},
+                                                              data-refreshto=${refreshto}"
                                                      data-refreshoffset="0" data-refreshlimit="20"
-                                                     data-refreshfrom="01.08.2022"
-                                                     data-refreshto="01.10.2022"
                                                      th:text="#{middlebar.showmore}">Показать еще</a>
     </div>
 </div>

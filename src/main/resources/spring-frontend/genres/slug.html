@@ -58,7 +58,7 @@
           </h1>
         </header>
         <div class="Section">
-          <div th:replace="~{fragments/books_pool_fragment :: popularBooks (${booksByGenre}, 'genre', ${currentGenre})}"></div>
+          <div th:replace="~{fragments/books_pool_fragment :: popularBooks (${booksByGenre}, 'genre', ${currentGenre}, '', '')}"></div>
         </div>
       </main>
     </div>

@@ -70,7 +70,7 @@ public class BookService {
         return bookRepository.findBookEntitiesByPriceOldIs(priceOld);
     }
     public List<BookEntity> getBestsellersBooks() {
-        return bookRepository.findBookEntitiesByIsBestsellerTrue();
+        return bookRepository.findBookEntitiesByBestsellerTrue();
     }
     public List<BookEntity> getBooksByMaxDiscount() {
         return bookRepository.getBookEntitiesByMaxDiscount();
@@ -81,28 +81,25 @@ public class BookService {
     }
     public Page<BookEntity> getRecentBooksForSlider(Integer offset, Integer limit) {
         Pageable nextPage = PageRequest.of(offset, limit);
-        return bookRepository.findRecentBooks(LocalDateTime.now().minusMonths(1), nextPage);
+        return bookRepository.findRecentBooks(LocalDateTime.now().minusMonths(2), nextPage);
     }
-    public Object getPageOfRecentBooks(String from, String to, Integer offset, Integer limit, Model model) {
+    public List<BookEntity> getPageOfRecentBooks(String from, String to, Integer offset, Integer limit) {
         Pageable nextPage;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyy");
         if (offset == null) {
             nextPage = PageRequest.of(0, 20);
-            List<BookEntity> bookEntities = bookRepository.findRecentBooks(
-                    LocalDateTime.now().minusMonths(1), LocalDateTime.now(), nextPage).getContent();
-            model.addAttribute("recentBooksPage", bookEntities);
-            return new ModelAndView("/books/recent");
+            return  bookRepository.findRecentBooks(
+                    LocalDateTime.now().minusMonths(2), LocalDateTime.now(), nextPage).getContent();
+
         } if (from == null) {
             nextPage = PageRequest.of(offset, limit);
-            List<BookEntity> bookEntities = bookRepository.findRecentBooks(
-                    LocalDateTime.now().minusMonths(1), LocalDateTime.now(), nextPage).getContent();
-            return new RecommendedBooksDto(bookEntities.size(), bookEntities);
+            return  bookRepository.findRecentBooks(
+                    LocalDateTime.now().minusMonths(2), LocalDateTime.now(), nextPage).getContent();
         }
         nextPage = PageRequest.of(offset, limit);
-        List<BookEntity> bookEntities = bookRepository.findRecentBooks(
+        return  bookRepository.findRecentBooks(
                 LocalDate.parse(from, formatter).atStartOfDay(),
                 LocalDate.parse(to, formatter).atStartOfDay(), nextPage).getContent();
-        return new RecommendedBooksDto(bookEntities.size(), bookEntities);
     }
     public Page<BookEntity> getPopularBooksPage(Integer offset, Integer limit) {
         List<BookEntity> bookEntities = popularBooksAlgorithm.getPopularBooks();
@@ -127,7 +124,6 @@ public class BookService {
     public List<BookEntity> getBooksBySlugList(List<String> booksSlutList) {
         return bookRepository.findAllBySlugIsIn(booksSlutList);
     }
-
     public boolean rateBook (String bookSlug, Integer value) {
         Optional<BookEntity> book = bookRepository.findBySlugIs(bookSlug);
         if (book.isPresent()) {

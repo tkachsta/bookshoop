@@ -45,7 +45,7 @@
         <h1 class="Middle-title" th:text="${currentAuthor.firstName} + ' ' + ${currentAuthor.lastName}">
         </h1>
         <div class="Section">
-          <div th:replace="~{fragments/books_pool_fragment :: popularBooks (${authorBooks}, 'author', ${currentAuthor.slug})}"></div>
+          <div th:replace="~{fragments/books_pool_fragment :: popularBooks (${authorBooks}, 'author', ${currentAuthor.slug}, '','')}"></div>
         </div>
       </main>
     </div>

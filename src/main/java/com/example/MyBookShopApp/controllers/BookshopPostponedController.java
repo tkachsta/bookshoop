@@ -1,120 +1,87 @@
 package com.example.MyBookShopApp.controllers;
-import com.example.MyBookShopApp.data.BookService;
-import com.example.MyBookShopApp.model.dtos.SearchWordDto;
+import com.example.MyBookShopApp.data.LinkBook2UserService;
+import com.example.MyBookShopApp.data.booklifecycle.CartStatus;
+import com.example.MyBookShopApp.data.booklifecycle.PostponedStatus;
 import com.example.MyBookShopApp.model.entities.Book.BookEntity;
-import org.springframework.boot.Banner;
+import com.example.MyBookShopApp.model.response.FalseResponse;
+import com.example.MyBookShopApp.model.response.TrueResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/postponed")
 public class BookshopPostponedController extends AbstractHeaderController {
-    private final BookService bookService;
-    public BookshopPostponedController(BookService bookService) {
-        this.bookService = bookService;
+
+    private final LinkBook2UserService linkBook2UserService;
+    private final CartStatus cartStatus;
+    private final PostponedStatus postponedStatus;
+    public BookshopPostponedController(LinkBook2UserService linkBook2UserService,
+                                       CartStatus cartStatus,
+                                       PostponedStatus postponedStatus) {
+        this.linkBook2UserService = linkBook2UserService;
+        this.cartStatus = cartStatus;
+        this.postponedStatus = postponedStatus;
     }
 
-    @ModelAttribute(name = "bookPostponed")
-    public List<BookEntity> bookEntities() {
-        return new ArrayList<>();
+
+
+    @ModelAttribute("allBooksToBuy")
+    public String moveBooksFromPostponedToCart() {
+        return String.join(",",
+                postponedStatus.getStatusCollection()
+                .stream()
+                .map(BookEntity::getSlug)
+                .toList());
     }
-    @ModelAttribute(name = "booksPostponed")
-    public List<BookEntity> postponedBooks() {return new ArrayList<>();}
 
-    @PostMapping("/changeBookStatus/{slug}")
-    public ModelAndView handleChangeBooksStatus(@PathVariable("slug") String slug,
-                                                @CookieValue(name = "postponedContents", required = false) String postponedContents,
-                                                HttpServletResponse response, Model model) {
 
-        if (postponedContents == null || postponedContents.equals("")) {
-            Cookie cookie = new Cookie("postponedContents", slug);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            model.addAttribute("isPostponedEmpty", false);
-        } else if (!postponedContents.contains(slug)) {
-            StringJoiner stringJoiner = new StringJoiner("/");
-            stringJoiner.add(postponedContents).add(slug);
-            Cookie cookie = new Cookie("postponedContents", stringJoiner.toString());
-            cookie.setPath("/");
-            response.addCookie(cookie);
+
+    @GetMapping
+    public ModelAndView handlePostponedRequest(Model model) {
+
+        List<BookEntity> bookEntities = numberPostponedBooks();
+        if(bookEntities.isEmpty()) {
+            model.addAttribute("isPostponedEmpty", true);
+        } else {
             model.addAttribute("isPostponedEmpty", false);
         }
+        return new ModelAndView("/postponed");
 
-        return new ModelAndView("redirect:/books/" + slug);
+    }
+    @PostMapping("/changeBookStatus/{slug}")
+    public ResponseEntity<?> handleChangeBooksStatus(@PathVariable("slug") String slug, Model model) {
 
+        if (linkBook2UserService.linkBookWithUser(slug, cartStatus, postponedStatus)) {
+            model.addAttribute("isPostponedEmpty", false);
+            return new ResponseEntity<>(new TrueResponse(true), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new FalseResponse(false, "Не удается обновить статус книги"),
+                HttpStatus.NO_CONTENT);
+
+    }
+    @PostMapping("/changeBookStatus/postponed/remove/{slug}")
+    public ResponseEntity<?> handleRemoveBookFromPostponedRequest(@PathVariable("slug") String slug, Model model) {
+
+        if(linkBook2UserService.unlinkBookWithUser(slug, postponedStatus)) {
+            model.addAttribute("isPostponedEmpty", false);
+            return new ResponseEntity<>(new TrueResponse(true), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new FalseResponse(false, "Не удалить книгу из отложенных"),
+                HttpStatus.NO_CONTENT);
     }
     @PostMapping("/buying-all/changeBookStatus/{slug}")
-    public ModelAndView handleBuyingAllBooksStatus (@PathVariable("slug") String slug,
-                                                    @CookieValue(name = "cartContents", required = false) String cartContents,
-                                                    HttpServletResponse response, Model model) {
+    public ResponseEntity<?> handleBuyingAllBooksStatus (@PathVariable("slug") String slug, Model model) {
 
-        List<String> booksSlug = List.of(slug.split(","));
-        booksSlug.forEach(x -> {
-            if (cartContents == null || cartContents.equals("")) {
-                Cookie cookie = new Cookie("cartContents", slug.replace(",", "/"));
-                cookie.setPath("/");
-                response.addCookie(cookie);
-                model.addAttribute("isCartEmpty", false);
-            } else if (!cartContents.contains(slug)) {
-                StringJoiner stringJoiner = new StringJoiner("/");
-                stringJoiner.add(cartContents).add(slug);
-                Cookie cookie = new Cookie("cartContents", stringJoiner.toString());
-                cookie.setPath("/");
-                response.addCookie(cookie);
-                model.addAttribute("isCartEmpty", false);
-            }
-        });
-
-        return new ModelAndView("/cart");
-    }
-    @GetMapping
-    public ModelAndView handlePostponedRequest(@CookieValue(value = "postponedContents", required = false) String postponedContents,
-                                               Model model) {
-
-        if (postponedContents == null || postponedContents.equals("")) {
-            model.addAttribute("isPostponedEmpty", true);
-        } else {
-            model.addAttribute("isPostponedEmpty", false);
-            postponedContents = postponedContents.startsWith("/") ?
-                    postponedContents.substring(1) : postponedContents;
-            postponedContents = postponedContents.endsWith("/") ?
-                    postponedContents.substring(0, postponedContents.length() - 1) : postponedContents;
-            String[] cookieSlugs = postponedContents.split("/");
-            List<BookEntity> bookEntities = bookService.getBooksBySlugList(Arrays.asList(cookieSlugs));
-            model.addAttribute("booksPostponed", bookEntities);
-            model.addAttribute("allBooksBuy", bookEntities
-                    .stream().map(BookEntity::getSlug).collect(Collectors.joining(",")));
+        if (linkBook2UserService.bulkBooksTransfer(slug, postponedStatus, cartStatus)) {
+            return new ResponseEntity<>(new TrueResponse(true), HttpStatus.OK);
         }
-
-        return new ModelAndView("/postponed");
-    }
-
-    @PostMapping("/changeBookStatus/postponed/remove/{slug}")
-    public ModelAndView handleRemoveBookFromPostponedRequest(@PathVariable("slug") String slug,
-                                                             @CookieValue(name = "postponedContents", required = false) String postponedContents,
-                                                             HttpServletResponse response, Model model) {
-
-        if (postponedContents != null && !postponedContents.equals("")) {
-            ArrayList<String> cookieBooks = new ArrayList<>(Arrays.asList(postponedContents.split("/")));
-            cookieBooks.remove(slug);
-            Cookie cookie = new Cookie("postponedContents", String.join("/", cookieBooks));
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            model.addAttribute("isPostponedEmpty", false);
-        } else {
-            model.addAttribute("isPostponedEmpty", true);
-        }
-
-        return new ModelAndView("redirect:/books/" + slug);
+        return new ResponseEntity<>(new FalseResponse(false, "Не удается перенести книги из отложенных в корзину"),
+                HttpStatus.NO_CONTENT);
     }
 
 

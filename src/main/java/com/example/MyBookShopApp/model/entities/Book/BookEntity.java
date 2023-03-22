@@ -4,8 +4,10 @@ import com.example.MyBookShopApp.model.entities.Bookfile2Type.Bookfile2Type;
 import com.example.MyBookShopApp.model.entities.Rating.OverallRatingBook;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "books")
+@EqualsAndHashCode
 public class BookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,7 @@ public class BookEntity {
     @Column
     private String image;
     @Column(name = "is_bestseller", columnDefinition = "BOOLEAN DEFAULT false")
-    private boolean isBestseller;
+    private boolean bestseller;
     @Column
     private Integer price;
     @Column
@@ -48,5 +51,6 @@ public class BookEntity {
     @JoinColumn(name = "id_rating", referencedColumnName = "id_rating")
     @JsonIgnore
     private OverallRatingBook rating;
+
 
 }

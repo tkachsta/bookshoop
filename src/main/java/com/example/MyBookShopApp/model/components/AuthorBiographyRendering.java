@@ -9,7 +9,6 @@ import java.util.List;
 public class AuthorBiographyRendering {
     private List<String> shortDescription = new ArrayList<>();
     private List<String> longDescription = new ArrayList<>();
-
     public void setDescriptions (String biography) {
         String[] description = biography.split(" ");
         int sentenceLength = 15;

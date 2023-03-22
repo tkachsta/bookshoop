@@ -18,10 +18,9 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
     List<BookEntity> findBookEntitiesByTitleContaining(String title);
     List<BookEntity> findBookEntitiesByPriceOldBetween(Integer min, Integer max);
     List<BookEntity> findBookEntitiesByPriceOldIs(Integer price);
-    List<BookEntity> findBookEntitiesByIsBestsellerTrue();
+    List<BookEntity> findBookEntitiesByBestsellerTrue();
     Optional<BookEntity> findBySlugIs(String slug);
-    @Query(value = "SELECT * FROM books WHERE discount = (SELECT MAX(discount) FROM books)",
-            nativeQuery = true)
+    @Query(value = "SELECT * FROM books WHERE discount = (SELECT MAX(discount) FROM books)", nativeQuery = true)
     List<BookEntity> getBookEntitiesByMaxDiscount();
     Page<BookEntity> findBookEntitiesByTitleContaining(String bookTitle, Pageable nextPage);
     List<BookEntity> findAllBySlugIsIn(List<String> slugs);
