@@ -8,9 +8,12 @@ import com.example.MyBookShopApp.security.BookStoreUserDetailService;
 import com.example.MyBookShopApp.security.BookStoreUserDetails;
 import com.example.MyBookShopApp.security.jwt.JWTUtil;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +31,8 @@ public class BookstoreUserRegister {
     private final AuthenticationManager authenticationManager;
     private final BookStoreUserDetailService userDetailService;
     private final JWTUtil jwtUtil;
+
+
 
     public void registerNewUser(RegistrationForm registrationForm) {
 
@@ -58,13 +63,14 @@ public class BookstoreUserRegister {
         return response;
     }
 
-    public ContactConfirmationResponse jwtLogin(ContactConfirmationPayload payload) {
+    public ContactConfirmationResponse jwtLogin(ContactConfirmationPayload payload) throws AuthenticationException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(payload.getContact(),
                 payload.getCode()));
         BookStoreUserDetails userDetails =
                 (BookStoreUserDetails) userDetailService.loadUserByUsername(payload.getContact());
         String jwtToken = jwtUtil.generateToken(userDetails);
         ContactConfirmationResponse response = new ContactConfirmationResponse();
+
         response.setResult(jwtToken);
         return response;
 

@@ -29,10 +29,6 @@ public class MainPageController extends AbstractHeaderController {
     private final TagService tagService;
     private final ReviewService reviewService;
     private final MapperToBookDto mapperToBookDto;
-
-
-
-
     @Autowired
     public MainPageController(BookService bookService,
                               TagService tagService,
@@ -43,6 +39,9 @@ public class MainPageController extends AbstractHeaderController {
         this.reviewService = reviewService;
         this.mapperToBookDto = mapperToBookDto;
     }
+
+
+
     @ModelAttribute("recommendedBooks")
     public List<BookDto> recommendedBooks(){
         List<BookEntity> bookEntities = bookService.getRecommendedBooksPage(0, 6).getContent();
@@ -65,7 +64,6 @@ public class MainPageController extends AbstractHeaderController {
 
 
 
-
     @GetMapping()
     public ModelAndView mainPage() {
         return new ModelAndView("index");
@@ -82,7 +80,6 @@ public class MainPageController extends AbstractHeaderController {
     public String contactsPage() {
         return "contacts";
     }
-
     @PostMapping(value = "/rateBook")
     public ModelAndView rateBook(@RequestBody RateBookRequest rateBook) {
 
@@ -90,7 +87,6 @@ public class MainPageController extends AbstractHeaderController {
         return new ModelAndView("redirect:/books/" + rateBook.getBookId());
 
     }
-
     @PostMapping(value = "/rateBookReview")
     public ResponseEntity<?> rateBookReview(@RequestParam (name = "reviewid") Integer reviewId,
                                          @RequestParam (name = "value") Integer value) {

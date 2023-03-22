@@ -9,6 +9,9 @@ import java.util.Locale;
 
 @Configuration
 public class LocaleChangeConfig implements WebMvcConfigurer {
+
+
+
     @Bean(name = "localeResolver")
     public SessionLocaleResolver localResolver() {
         SessionLocaleResolver localeResolver = new SessionLocaleResolver();
@@ -25,4 +28,8 @@ public class LocaleChangeConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }
+
+
+
+
 }

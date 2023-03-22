@@ -1,29 +1,32 @@
 package com.example.MyBookShopApp.security.jwt;
+import com.example.MyBookShopApp.data.JwtBlackListService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 @Service
 public class JWTUtil {
-
     @Value("${auth.secret}")
     private String secret;
+    private final JwtBlackListService blackListService;
+    public JWTUtil(JwtBlackListService blackListService) {
+        this.blackListService = blackListService;
+    }
+
+
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
-
     private String createToken(Map<String, Object> claims, String username) {
         return   Jwts
                 .builder()
@@ -33,7 +36,6 @@ public class JWTUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
-
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -52,7 +54,9 @@ public class JWTUtil {
     }
     public Boolean validateToken(String token, UserDetails userDetails) {
         String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUsername()) &&
+                !isTokenExpired(token) &&
+                !blackListService.containsToken(token));
     }
 
 

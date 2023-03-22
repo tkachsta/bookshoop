@@ -20,7 +20,6 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
     private final BookStoreUserDetailService userDetailService;
     private final JWTUtil jwtUtil;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

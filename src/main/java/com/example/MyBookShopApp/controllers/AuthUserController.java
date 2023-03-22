@@ -3,12 +3,19 @@ package com.example.MyBookShopApp.controllers;
 import com.example.MyBookShopApp.data.BookstoreUserRegister;
 import com.example.MyBookShopApp.data.booklifecycle.StatusHub;
 import com.example.MyBookShopApp.data.mapper.MapperToBookDto;
+import com.example.MyBookShopApp.exceptions.ApiWrongParameterException;
 import com.example.MyBookShopApp.model.dtos.security.ContactConfirmationPayload;
 import com.example.MyBookShopApp.model.dtos.security.RegistrationForm;
 import com.example.MyBookShopApp.model.entities.Book.BookEntity;
+import com.example.MyBookShopApp.model.response.ApiResponse.BookApiResponse;
 import com.example.MyBookShopApp.model.response.ContactConfirmationResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +32,9 @@ public class AuthUserController extends AbstractHeaderController {
     private final BookstoreUserRegister bookstoreUserRegister;
     private final MapperToBookDto mapperToBookDto;
     private final StatusHub statusHub;
+
+
+
     @Autowired
     public AuthUserController(BookstoreUserRegister bookstoreUserRegister,
                               MapperToBookDto mapperToBookDto,
@@ -93,6 +103,13 @@ public class AuthUserController extends AbstractHeaderController {
         model.addAttribute("currentUser", bookstoreUserRegister.getCurrentUser());
         return new ModelAndView("profile");
     }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<BookApiResponse<BookEntity>> handleBookstoreApiWrongParameterException(Exception exception) {
+        return new ResponseEntity<>(
+                new BookApiResponse<>(
+                        HttpStatus.BAD_REQUEST, "Bad parameter value...", exception), HttpStatus.OK);
+    }
+
 
 //    @GetMapping("/logout")
 //    public ModelAndView handleLogOut(HttpServletRequest request) {

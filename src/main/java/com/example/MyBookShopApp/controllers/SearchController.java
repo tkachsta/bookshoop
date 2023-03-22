@@ -41,7 +41,6 @@ public class SearchController extends AbstractHeaderController {
             return "/search/index";
         }
         throw new EmptySearchException("Поиск по пустой строке (null) невозможен");
-
     }
     @GetMapping("/page/{searchWord}")
     @ResponseBody
