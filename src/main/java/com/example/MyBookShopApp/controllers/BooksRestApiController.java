@@ -1,5 +1,4 @@
 package com.example.MyBookShopApp.controllers;
-import com.example.MyBookShopApp.*;
 import com.example.MyBookShopApp.data.BookService;
 import com.example.MyBookShopApp.exceptions.ApiWrongParameterException;
 import com.example.MyBookShopApp.model.entities.Author.AuthorEntity;
@@ -13,9 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
-
-
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -51,7 +51,7 @@ public class BookstoreUserRegister {
 
     }
 
-    public ContactConfirmationResponse login(ContactConfirmationPayload payload) {
+    public ContactConfirmationResponse login (ContactConfirmationPayload payload) {
 
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

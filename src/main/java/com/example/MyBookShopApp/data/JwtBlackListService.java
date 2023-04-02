@@ -13,15 +13,15 @@ import java.util.Optional;
 public class JwtBlackListService {
 
     private final JwtBlackListRepository blackListRepository;
-
     public boolean containsToken(String token) {
         Optional<JwtBlackList> jwtToken = blackListRepository.findByToken(token);
         return jwtToken.isPresent();
     }
     public void addTokenToBlackList(String token) {
         JwtBlackList jwtToken = new JwtBlackList();
-        jwtToken.setToken(token);
+        jwtToken.setToken(String.valueOf(token.hashCode()));
         blackListRepository.save(jwtToken);
     }
+
 
 }

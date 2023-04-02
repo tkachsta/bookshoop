@@ -56,7 +56,7 @@ public class JWTUtil {
         String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) &&
                 !isTokenExpired(token) &&
-                !blackListService.containsToken(token));
+                !blackListService.containsToken(String.valueOf(token.hashCode())));
     }
 
 
